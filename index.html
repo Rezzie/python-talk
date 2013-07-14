@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+
+        <title>Python Lightning Talk</title>
+
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <link rel="stylesheet" href="css/reveal.min.css">
+        <link rel="stylesheet" href="css/theme/default.css" id="theme">
+        <link rel="stylesheet" href="lib/css/monokai.css">
+        <link rel="stylesheet" href="css/forkit.css">
+
+        <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+        <script>
+            document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+        </script>
+
+        <!--[if lt IE 9]>
+        <script src="lib/js/html5shiv.js"></script>
+        <![endif]-->
+        <style>
+            .nothx {color: #A6E22E}
+        </style>
+    </head>
+
+    <body>
+        <div class="reveal">
+            <div class="slides">
+
+                <section>
+                    <h1>Python</h1>
+                    <h2 style="color:#A6E22E">why you should use it</h3>
+                    <p>
+                        <small>by <a href="#">james</a></small>
+                    </p>
+                </section>
+
+
+                <section>
+                    <h3>language features</h3>
+                    <img src="img/programming.gif" width="256" height="256" />
+                </section>
+
+
+                <section>
+                    <section>
+                        <h3>list comprehensions</h3>
+                        <pre><code class="python" data-trim contenteditable>
+odd_squares = []
+for i in range(10):
+    if i % 2:
+        odd_squares.append(i * i)
+print odd_squares  # [1, 9, 25, 49, 81]
+                        </code></pre>
+                        <pre class="fragment" data-fragment-index="1"><code class="python" data-trim contenteditable>
+odd_squares = [i * i for i in range(10) if i % 2]
+print odd_squares  # [1, 9, 25, 49, 81]
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h3>looping</h3>
+                        <pre><code class="python" data-trim contenteditable>
+4         0 BUILD_LIST               0
+          3 STORE_FAST               0 (odd_squares)
+
+5         6 SETUP_LOOP              50 (to 59)
+          9 LOAD_GLOBAL              0 (range)
+         12 LOAD_CONST               1 (10)
+         15 CALL_FUNCTION            1
+         18 GET_ITER
+    &gt;&gt;   19 FOR_ITER                36 (to 58)
+         22 STORE_FAST               1 (i)
+
+6        25 LOAD_FAST                1 (i)
+         28 LOAD_CONST               2 (2)
+         31 BINARY_MODULO
+         32 POP_JUMP_IF_FALSE       19
+
+7        35 LOAD_FAST                0 (odd_squares)
+         38 LOAD_ATTR                1 (append)
+         41 LOAD_FAST                1 (i)
+         44 LOAD_FAST                1 (i)
+         47 BINARY_MULTIPLY
+         48 CALL_FUNCTION            1
+         51 POP_TOP
+         52 JUMP_ABSOLUTE           19
+         55 JUMP_ABSOLUTE           19
+    &gt;&gt;   58 POP_BLOCK
+
+8   &gt;&gt;   59 LOAD_FAST                0 (odd_squares)
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h3>list comprehension</h3>
+                        <pre><code class="python" data-trim contenteditable>
+2         0 BUILD_LIST               0
+          3 LOAD_GLOBAL              0 (range)
+          6 LOAD_CONST               1 (10)
+          9 CALL_FUNCTION            1
+         12 GET_ITER
+    &gt;&gt;   13 FOR_ITER                26 (to 42)
+         16 STORE_FAST               0 (i)
+         19 LOAD_FAST                0 (i)
+         22 LOAD_CONST               2 (2)
+         25 BINARY_MODULO
+         26 POP_JUMP_IF_FALSE       13
+         29 LOAD_FAST                0 (i)
+         32 LOAD_FAST                0 (i)
+         35 BINARY_MULTIPLY
+         36 LIST_APPEND              2
+         39 JUMP_ABSOLUTE           13
+                        </code></pre>
+                    </section>
+                </section>
+
+
+                <section>
+                    <section>
+                        <h3>generator functions/expressions</h3>
+                        <pre><code data-trim contenteditable>
+81.107.39.38,/index.html,200,15320
+81.107.39.38,/etc/passwd,404,-
+81.107.39.38,/flag.txt,200,8701
+                        </code></pre>
+                        <pre class="fragment" data-fragment-index="1"><code class="python" data-trim contenteditable>
+with open(&quot;access.log&quot;, &quot;r&quot;) as log:
+    total_bytes = 0
+    for line in log.readlines():
+        bytes = line.split(&quot;,&quot;)[3]  # [ip, url, status, bytes]
+        if bytes != &quot;-&quot;:
+            total_bytes += int(bytes)
+    print &quot;Total: {0} bytes&quot;.format(total_bytes)  # Total: 24021 bytes
+                        </code></pre>
+                        <pre class="fragment" data-fragment-index="2"><code class="python" data-trim contenteditable>
+with open(&quot;access.log&quot;, &quot;r&quot;) as log:
+    byte_column = (line.split(&quot;,&quot;)[3] for line in log)
+    bytes = (int(bytes) for bytes in byte_column if bytes != &quot;-&quot;)
+    print &quot;Total: {0} bytes&quot;.format(sum(bytes))  # Total: 24021 bytes
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h3>looping</h3>
+                        <pre><code class="python" data-trim contenteditable>
+4         0 LOAD_GLOBAL              0 (open)
+          3 LOAD_CONST               1 ('access.log')
+          6 LOAD_CONST               2 ('r')
+          9 CALL_FUNCTION            2
+         12 SETUP_WITH              90 (to 105)
+         15 STORE_FAST               0 (log)
+
+5        18 LOAD_CONST               3 (0)
+         21 STORE_FAST               1 (total_bytes)
+
+6        24 SETUP_LOOP              70 (to 97)
+         27 LOAD_FAST                0 (log)
+         30 LOAD_ATTR                1 (readlines)
+         33 CALL_FUNCTION            0
+         36 GET_ITER
+    &gt;&gt;   37 FOR_ITER                56 (to 96)
+         40 STORE_FAST               2 (line)
+
+7        43 LOAD_FAST                2 (line)
+         46 LOAD_ATTR                2 (split)
+         49 LOAD_CONST               4 (',')
+         52 CALL_FUNCTION            1
+         55 LOAD_CONST               5 (3)
+         58 BINARY_SUBSCR
+         59 STORE_FAST               3 (bytes)
+
+8        62 LOAD_FAST                3 (bytes)
+         65 LOAD_CONST               6 ('-')
+         68 COMPARE_OP               3 (!=)
+         71 POP_JUMP_IF_FALSE       37
+
+9        74 LOAD_FAST                1 (total_bytes)
+         77 LOAD_GLOBAL              3 (int)
+         80 LOAD_FAST                3 (bytes)
+         83 CALL_FUNCTION            1
+         86 INPLACE_ADD
+         87 STORE_FAST               1 (total_bytes)
+         90 JUMP_ABSOLUTE           37
+         93 JUMP_ABSOLUTE           37
+    &gt;&gt;   96 POP_BLOCK
+
+10  &gt;&gt;   97 LOAD_FAST                1 (total_bytes)
+        100 RETURN_VALUE
+        101 POP_BLOCK
+        102 LOAD_CONST               0 (None)
+    &gt;&gt;  105 WITH_CLEANUP
+        106 END_FINALLY
+        107 LOAD_CONST               0 (None)
+        110 RETURN_VALUE
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h3>generator expressions</h3>
+                        <pre><code class="python" data-trim contenteditable>
+13        0 LOAD_GLOBAL              0 (open)
+          3 LOAD_CONST               1 ('access.log')
+          6 LOAD_CONST               2 ('r')
+          9 CALL_FUNCTION            2
+         12 SETUP_WITH              49 (to 64)
+         15 STORE_FAST               0 (log)
+
+14       18 LOAD_CONST               3 (&lt;code object &lt;genexpr&gt; at 0xb74878d8, file &quot;prog.py&quot;, line 14&gt;)
+         21 MAKE_FUNCTION            0
+         24 LOAD_FAST                0 (log)
+         27 GET_ITER
+         28 CALL_FUNCTION            1
+         31 STORE_FAST               1 (byte_column)
+
+15       34 LOAD_CONST               4 (&lt;code object &lt;genexpr&gt; at 0xb7487a88, file &quot;prog.py&quot;, line 15&gt;)
+         37 MAKE_FUNCTION            0
+         40 LOAD_FAST                1 (byte_column)
+         43 GET_ITER
+         44 CALL_FUNCTION            1
+         47 STORE_FAST               2 (bytes)
+
+16       50 LOAD_GLOBAL              1 (sum)
+         53 LOAD_FAST                2 (bytes)
+         56 CALL_FUNCTION            1
+         59 RETURN_VALUE
+         60 POP_BLOCK
+         61 LOAD_CONST               0 (None)
+    &gt;&gt;   64 WITH_CLEANUP
+         65 END_FINALLY
+         66 LOAD_CONST               0 (None)
+         69 RETURN_VALUE
+                        </code></pre>
+                    </section>
+                </section>
+
+
+<!--
+                 <section>
+                    <h3>chained comparison operators</h3>
+                    <pre><code class="python" data-trim contenteditable>
+if x &gt; 5 and x &lt;= 10:
+    pass
+                    </code></pre>
+                    <span class="fragment fade-in" data-fragment-index="1">
+                        <span class="fragment fade-out" data-fragment-index="2">
+                            <huge class="nothx">lol, nothx</huge>
+                        </span>
+                    </span>
+                    <pre class="fragment" data-fragment-index="2"><code class="python" data-trim contenteditable>
+if 5 &lt; x &lt;= 10:
+    pass
+                    </code></pre>
+                </section>
+ -->
+
+                <section>
+                    <h3>argument/tuple unpacking</h3>
+                    <pre><code class="python" data-trim contenteditable>
+def sub(lhs, rhs):
+    return lhs - rhs
+
+example1 = (10, 4)
+example2 = {'rhs': 1, 'lhs': 3}
+
+sub(*example1)   # 6
+sub(**example2)  # 2
+
+person = ['james', 24, 'the north']
+name, age, country = person
+                    </code></pre>
+                </section>
+
+
+                <section>
+                    <h3>list slicing</h3>
+                    <pre><code class="python" data-trim contenteditable>
+people = ['matthew', 'mark', 'luke', 'john']
+
+people[-1]    # 'john'
+people[1:3]   # ['mark', 'luke']
+people[2:]    # ['luke', 'john']
+people[1::2]  # ['mark', 'john']
+people[::-1]  # ['john', 'luke', 'mark', 'matthew']
+              # ... reversed(people)
+
+people[1:3] = ['james', 'peter']
+print people  # ['matthew', 'james', 'peter', 'john']
+                    </code></pre>
+                </section>
+
+
+                <section>
+                    <h3>decorators</h3>
+                    <pre><code class="python" data-trim contenteditable>
+def fib(n):
+    if n == 0 or n == 1:
+        return n
+    else:
+        return fib(n - 2) + fib(n - 1)
+                    </code></pre>
+                    <pre class="fragment" data-fragment-index="2"><code class="python" data-trim contenteditable>
+fib(20)  # time:  0.00218s
+fib(30)  # time:  0.27223s
+fib(40)  # time: 33.30325s
+                    </code></pre>
+                    <pre class="fragment" data-fragment-index="3"><code class="python" data-trim contenteditable>
+import functools
+def memoize(callable):
+    cache = callable.cache = {}
+    @functools.wraps(callable)
+    def memoizer(*args, **kwargs):
+        if args not in cache:
+            cache[args] = callable(*args, **kwargs)
+        return cache[args]
+    return memoizer
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h3>decorators (cont.)</h3>
+                    <pre><code class="python" data-trim contenteditable>
+@memoize
+def fib(n):
+    if n == 0 or n == 1:
+        return n
+    else:
+        return fib(n - 2) + fib(n - 1)
+                    </code></pre>
+                    <pre class="fragment fade-in" data-fragment-index="1"><code class="python" data-trim contenteditable>
+fib(20)   # time:  0.00000s
+fib(30)   # time:  0.00000s
+fib(40)   # time:  0.00000s
+fib(500)  # time:  0.00013s
+                    </code></pre>
+                    <img class="fragment fade-in" data-fragment-index="1" src="img/umad.jpg" width="240" height="180" />
+                </section>
+
+<!--
+                <section>
+                    <h3>executable libraries</h3>
+                    <pre><code class="python" data-trim contenteditable>
+class TextEncoder(object):
+
+    def encode(self, text):
+        pass  # do something
+
+    def decode(self, text):
+        pass  # do something
+
+
+if __name__ == &quot;__main__&quot;:
+
+    import sys
+    encoder = TextEncoder()
+    func = getattr(encoder, sys.argv[1])
+    print func(*sys.argv[2:])
+
+# text_encoder.py encode &quot;Hello&quot;
+                    </code></pre>
+                </section>
+ -->
+
+                <section>
+                    <h3>monkey patching / duck punching</h3>
+                    <pre><code class="python" data-trim contenteditable>
+import types
+from third_party import SomeClass
+
+def insult1(self): print "lol,n00b"
+def insult2(self): print "losermatt"
+
+demo1, demo2 = SomeClass(), SomeClass()
+
+demo1.insult_me()  # AttributeError
+SomeClass.insult_me = insult1
+demo1.insult_me()  # "lolnoob"
+demo2.insult_me()  # "lolnoob"
+
+demo2.insult_matt = types.MethodType(insult2, demo2)
+demo2.insult_matt()  # "losermatt"
+demo3.insult_matt()  # AttributeError
+                    </code></pre>
+                </section>
+
+
+                <section>
+                    <h3>random goodies</h3>
+                    <p align="left">first-class functions &amp; closures:</p>
+                    <pre><code class="python" data-trim contenteditable>
+def apply(op, lhs, rhs):
+    return op(lhs, rhs)
+
+def add(lhs, rhs):
+    return lhs + rhs
+
+print apply(add, 3, 4)  # 7
+                    </code></pre>
+                    <p align="left">lambdas:</p>
+                    <pre><code class="python" data-trim contenteditable>
+import random, string
+
+make_password = lambda length, alphabet=string.letters: \
+    ''.join(random.choice(alphabet) for _ in xrange(length))
+
+print make_password(10)  # "QYMdfxtLvE"
+                    </code></pre>
+                </section>
+
+
+                <section>
+                    <h3>random goodies (cont.)</h3>
+                    <p align="left">context managers:</p>
+                    <pre><code class="python" data-trim contenteditable>
+with open('box.txt', 'w') as f:
+    f.write(things_for_my_box)  # RAII plz
+                    </code></pre>
+                    <p align="left">scalar/iterable multiplication:</p>
+                    <pre><code class="python" data-trim contenteditable>
+policeman_says = 'hello' * 3
+print policeman_says   # 'hellohellohello'
+
+nopslide = [0] * 1337  # [0, 0, ..., 0]
+                    </code></pre>
+                    <p align="left">chained comparison operators:</p>
+                    <pre><code class="python" data-trim contenteditable>
+if 5 &lt; x &lt;= 10:
+    pass
+                    </code></pre>
+<!--
+                    <p align="left">Substring testing:</p>
+                    <pre><code class="python" data-trim contenteditable>
+if 'hell' in policeman_says:
+    pass
+                    </code></pre>
+-->
+                 </section>
+
+
+                <section>
+                    <h3>random goodies (cont.)</h3>
+                    <p align="left">for...else loops:</p>
+                    <pre><code class="python" data-trim contenteditable>
+for path in filepaths:
+    if path.endswidth(".jpg"):
+        break
+else:
+    print "where u hide ur pictures :c"
+                    </code></pre>
+                    <p align="left">try...except...else:</p>
+                    <pre><code class="python" data-trim contenteditable>
+try:
+    maybe_throw()
+except NaughtyException:
+    print "stop throwing things"
+else:
+    print "thx for not throwing :)"
+finally:
+    print "plz leve now"
+                    </code></pre>
+                </section>
+
+
+                <section>
+                    <h3>tomfoolery</h3>
+                    <p align="left">mutable built-in constants:</p>
+                    <pre><code class="python" data-trim contenteditable>
+True, False = False, True  # trolololol
+                    </code></pre>
+                    <p align="left">strong source code protection:</p>
+                    <pre><code class="python" data-trim contenteditable>
+#!/usr/bin/env python
+# -*- coding: rot13 -*-
+
+vzcbeg bf
+cevag "Cevagvat erphefvir qverpgbel gerr:".rapbqr("rot13")
+sbe ebbg, qvef, svyrf va bf.jnyx(bf.trgpjq()):
+    sbe anzr va svyrf:
+        cevag bf.cngu.wbva(ebbg, anzr)
+                    </code></pre>
+                </section>
+
+
+                <section>
+                    <h3>comprehensive standard library</h3>
+                    <ul>
+                        <li>Text encoding (base64, URL, MIME etc.)</li>
+                        <li>Networking (sockets, HTTP etc.)</li>
+                        <li>XML/JSON/CSV parsing &amp; pretty printing</li>
+                        <li>itertools (functional programming)</li>
+                        <li>Compression</li>
+                        <li>Code profiling</li>
+                        <li>Unit testing</li>
+                        <li>HTTP/SMTP servers</li>
+                        <li>...</li>
+                    </ul>
+                </section>
+
+
+                <section>
+                    <h3>third-party goodies</h3>
+                    <ul>
+                        <li><a href="http://pythontutor.com/">Python Tutor</a></li>
+                        <li><a href="http://pymotw.com/">PyMOTW</a></li>
+                        <li><a href="https://pypi.python.org/pypi/">PyPI</a></li>
+                        <li><a href="http://pypy.org/">PyPy</a></li>
+                        <li><a href="http://www.numpy.org/">NumPy</a> + <a href="http://www.scipy.org/">SciPy</a> + <a href="http://pandas.pydata.org/">Pandas</a></li>
+                        <li><a href="http://numba.pydata.org/">Numba</a></li>
+                        <li><a href="http://matplotlib.org/">matplotlib</a></li>
+                        <li><a href="https://twistedmatrix.com/trac/">Twisted</a></li>
+                        <li>...</li>
+                    </ul>
+                </section>
+
+
+                <section>
+                    <h1>end</h1>
+                    <a href="http://xkcd.com/353/"><img src="img/xkcd.png" width="518" height="319" /></a>
+                </section>
+
+            </div>
+        </div>
+
+        <!-- The contents (if there's no contents the ribbon acts as a link) -->
+        <div class="forkit-curtain">
+            <div class="close-button"></div>
+            <img src="img/cat1.jpg">
+            <img src="img/cat2.jpg">
+            <img src="img/cat3.jpg">
+            <img src="img/cat4.jpg">
+        </div>
+
+        <!-- The ribbon -->
+        <a class="forkit" data-text="Never Pull This" data-text-detached="Please stop!" href="#"><img style="position: absolute; top: 0; right: 0; border: 0;" src="img/ribbon.png" alt=""></a>
+
+        <script src="js/forkit.js"></script>
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.min.js"></script>
+
+        <script>
+            Reveal.initialize({
+                controls: true,
+                progress: true,
+                history: false,
+                center: true,
+
+                theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+                transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+                // Optional libraries used to extend on reveal.js
+                dependencies: [
+                    { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                    { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+                    { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+                    // { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+                    // { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+                ]
+            });
+
+        </script>
+
+    </body>
+<html>
